@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory WJ</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: rgb(225, 166, 173);
+        }
+        .container {
+            display: flex;
+            justify-content: space-between;
+            width: 50%; /* This sets the width of the button container */
+        }
+        button {
+            background-color: white;
+            color: black;
+            border: 2px solid black;
+            padding: 20px; /* Make the padding larger to match the search bar height */
+            margin: 0 10px; /* Space between buttons */
+            cursor: pointer;
+            font-size: 28px; /* Match the font size with the search input */
+            border-radius: 5px; /* Rounded corners */
+            box-shadow: 0 0 10px rgb(247, 206, 215);
+            flex: 1; /* Ensure the buttons take up equal width */
+            max-width: 100%; /* Ensure they don’t exceed the container width */
+        }
+        button:hover {
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <button id="addButton">ADD</button>
+        <button id="searchButton" onclick="window.location.href='search.html'">SEARCH</button>
+    </div>
+</body>
+</html>

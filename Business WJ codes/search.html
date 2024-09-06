@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory Search</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: rgb(247, 206, 215);
+        }
+        .search-container {
+            display: flex;
+            align-items: left;
+            background-color: white;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgb(212, 90, 139);
+        }
+        input[type="text"] {
+            border: 2px solid black;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 28px; /* Updated to font size 28 */
+            outline: none;
+            flex: 1;
+        }
+        button {
+            background-color: white;
+            color: black;
+            border: 2px solid black;
+            padding: 10px;
+            margin-left: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #f0f0f0;
+        }
+        .container {
+            text-align: center;
+            width: 40%;
+        }
+        #resultContainer {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-top: 10px;
+            width: 100%;
+        }
+        .info {
+            flex: 1;
+            margin-top: 10px;
+            color: rgb(212, 90, 139);
+            text-align: left; /* Align text to the left */
+            font-size: 28px; /* Set font size of item details to 28 */
+        }
+        .image-container {
+            margin-left: 30px;
+            max-width: 300px;
+        }
+        .image-container img {
+            flex: 1;
+            align-items: center;
+            margin-top: 10px;
+            max-width: 100%;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgb(212, 90, 139);
+        }
+        /* New style for the "Item not Found" message */
+        .not-found {
+            margin-top: 10px;
+            color: black;
+            text-align: center; /* Center-align the message */
+            font-size: 24px; /* Set font size separately from .info */
+            font-weight: bold; /* You can adjust this for emphasis */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Search Serial #...">
+            <button id="searchButton">
+                &#128269; <!-- Unicode for magnifying glass -->
+            </button>
+        </div>
+        <div id="notFoundMessage"></div> <!-- New div for not found message -->
+        <div id="resultContainer">
+            <div id="searchResult" class="info"></div>
+            <div class="image-container" id="imageContainer"></div>
+        </div>
+    </div>
+    <script>
+        // Object with item details and image URLs
+        var items = {
+            "apple": {
+                "Serial Number": "A12345",
+                "Product Name": "Apple",
+                "Price": "US$1.00",
+                "Qty": "100",
+                "Weight": "5.0 lb",
+                "Rack": "100",
+                "Added Date": "09-05-2024",
+                "Product Status": "Online",
+                "Condition": "New",
+                "Image URL": "https://www.kindpng.com/picc/m/136-1367227_apple-icon-apple-icon-cartoon-png-transparent-png.png"
+            },
+            "banana": {
+                "Serial Number": "B67890",
+                "Product Name": "Banana",
+                "Price": "US$0.50",
+                "Qty": "150",
+                "Weight": "10.0 lb",
+                "Rack": "600",
+                "Added Date": "09-05-2024",
+                "Product Status": "In-Stock",
+                "Condition": "Open Box",
+                "Image URL": "https://i.kisscc0.com/20180814/ope/kisscc0-banana-split-drawing-download-fruit-bananas-icon-5b72c4b9d01114.5898853315342481218523.png"
+            },
+            "orange": {
+                "Serial Number": "O54321",
+                "Product Name": "Orange",
+                "Price": "US$1.20",
+                "Qty": "200",
+                "Weight": "15.0 lb",
+                "Rack": "500",
+                "Added Date": "09-05-2024",
+                "Product Status": "Out of Stock",
+                "Condition": "N/A",
+                "Image URL": "https://th.bing.com/th/id/OIP.__bAQzvCB_7o1DCTfv8RQwHaHa?rs=1&pid=ImgDetMain"
+            },
+            "grape": {
+                "Serial Number": "G98765",
+                "Product Name": "Grape",
+                "Price": "US$2.50",
+                "Qty": "50",
+                "Weight": "5.6 lb",
+                "Rack": "900",
+                "Added Date": "09-05-2024",
+                "Product Status": "In-Stock",
+                "Condition": "New",
+                "Image URL": "https://th.bing.com/th/id/OIP.Wpu1aijqdwq1Jkf_icPB-QHaIF?rs=1&pid=ImgDetMain"
+            },
+            "watermelon": {
+                "Serial Number": "W45678",
+                "Product Name": "Watermelon",
+                "Price": "US$5.00",
+                "Qty": "25",
+                "Weight": "3.0 lb",
+                "Rack": "400",
+                "Added Date": "09-05-2024",
+                "Product Status": "Online",
+                "Condition": "Open Box",
+                "Image URL": "https://static.vecteezy.com/system/resources/previews/009/597/723/original/watermelon-fruit-illustration-cartoon-png.png"
+            }
+        };
+
+        function searchItems() {
+            var query = document.getElementById('searchInput').value.toLowerCase();
+            var resultDiv = document.getElementById('searchResult');
+            var imageContainer = document.getElementById('imageContainer');
+            var notFoundMessage = document.getElementById('notFoundMessage');
+            
+            if (items[query]) {
+                var item = items[query];
+                resultDiv.innerHTML = `
+                    <div class="info">
+                        <p><strong>Serial Number:</strong> ${item["Serial Number"]}</p>
+                        <p><strong>Product Name:</strong> ${item["Product Name"]}</p>
+                        <p><strong>Price:</strong> ${item["Price"]}</p>
+                        <p><strong>Qty:</strong> ${item["Qty"]}</p>
+                        <p><strong>Weight:</strong> ${item["Weight"]}</p>
+                        <p><strong>Rack:</strong> ${item["Rack"]}</p>
+                        <p><strong>Added Date:</strong> ${item["Added Date"]}</p>
+                        <p><strong>Product Status:</strong> ${item["Product Status"]}</p>
+                        <p><strong>Condition:</strong> ${item["Condition"]}</p>
+                    </div>
+                `;
+                imageContainer.innerHTML = `<img src="${item["Image URL"]}" alt="${item["Product Name"]}">`;
+                notFoundMessage.innerHTML = ''; // Clear the not found message
+            } else {
+                resultDiv.innerHTML = ''; // Clear the result container
+                imageContainer.innerHTML = ''; // Clear image if item not found
+                notFoundMessage.innerHTML = '<div class="not-found">Item not Found.</div>'; // Show centered message with new style
+            }
+        }
+
+        // Event listener for search button click
+        document.getElementById('searchButton').addEventListener('click', searchItems);
+
+        // Event listener for Enter key press
+        document.getElementById('searchInput').addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                searchItems();
+            }
+        });
+    </script>
+</body>
+</html>

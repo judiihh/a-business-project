@@ -1,0 +1,6 @@
+.not-found-message {
+    text-align: center;
+    margin-top: 10px;
+    color: black;
+    font-size: 28px; /* To match other text */
+}
